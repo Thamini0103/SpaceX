@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "5bb35986-0c01-4ec3-b3d3-10b6ca3cba7e",
+		"name": "SpaceX",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33148758"
+	},
+	"item": [
+		{
+			"name": "Ships",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Ships($limit: Int) {\r\n  ships(limit: $limit) {\r\n    id\r\n    missions {\r\n      name\r\n    }\r\n    name\r\n    position {\r\n      latitude\r\n      longitude\r\n    }\r\n    status\r\n  }\r\n}",
+						"variables": "{\r\n  \"limit\": 3\r\n}"
+					}
+				},
+				"url": "{{baseURL}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Capsules",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"schemaCapsules\", {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"capsules\": {\r",
+							"          \"type\": \"array\",\r",
+							"          \"items\": [\r",
+							"            {\r",
+							"              \"type\": \"object\",\r",
+							"              \"properties\": {\r",
+							"                \"id\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"missions\": {\r",
+							"                  \"type\": \"null\"\r",
+							"                },\r",
+							"                \"status\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                },\r",
+							"                \"type\": {\r",
+							"                  \"type\": \"string\"\r",
+							"                }\r",
+							"              },\r",
+							"              \"required\": [\r",
+							"                \"id\",\r",
+							"                \"missions\",\r",
+							"                \"status\",\r",
+							"                \"type\"\r",
+							"              ]\r",
+							"            }\r",
+							"          ]\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"capsules\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"data\"\r",
+							"  ]\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"/* teste de contrato*/\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get(\"schemaCapsules\"))).to.be.true;\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"/*buscar id*/\r",
+							"pm.test('Capturar id', function () {\r",
+							"    console.log(pm.response.json().data.capsules[0].id)\r",
+							"    pm.globals.set(\"capsuleID\", pm.response.json().data.capsules[0].id)   \r",
+							"});\r",
+							"\r",
+							"/*capturar o objeto do id para validação*/\r",
+							"pm.test('Capturar objeto', function () {\r",
+							"    console.log(pm.response.json().data.capsules[0])\r",
+							"    pm.globals.set(\"capsuleObj\", pm.response.json().data.capsules[0])   \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Capsules($limit: Int) {\r\n  capsules(limit: $limit) {\r\n    id\r\n    missions {\r\n      name\r\n    }\r\n    status\r\n    type\r\n  }\r\n}",
+						"variables": "{\r\n  \"limit\": 3\r\n}"
+					}
+				},
+				"url": "{{baseURL}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Capsule",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.set(\"schemaCapsule\", \r",
+							"{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"data\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"capsule\": {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"id\": {\r",
+							"              \"type\": \"string\"\r",
+							"            },\r",
+							"            \"missions\": {\r",
+							"              \"type\": \"null\"\r",
+							"            },\r",
+							"            \"status\": {\r",
+							"              \"type\": \"string\"\r",
+							"            },\r",
+							"            \"type\": {\r",
+							"              \"type\": \"string\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"id\",\r",
+							"            \"missions\",\r",
+							"            \"status\",\r",
+							"            \"type\"\r",
+							"          ]\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"capsule\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"data\"\r",
+							"  ]\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"/* teste de contrato*/\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get(\"schemaCapsule\"))).to.be.true;\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"/*validar id*/\r",
+							"pm.test('Validar ID retornado', function () {\r",
+							"    pm.expect(pm.response.json().data.capsule.id).to.be.equal(pm.globals.get(\"capsuleID\"))   \r",
+							"});\r",
+							"\r",
+							"/*validar objeto*/\r",
+							"pm.test('Validar dados do objeto retornado', function () {\r",
+							"    pm.expect(pm.response.json().data.capsule).contain(pm.globals.get(\"capsuleObj\"))   \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query Capsule($capsuleId: ID!) {\r\n  capsule(id: $capsuleId) {\r\n    id\r\n    missions {\r\n      name\r\n    }\r\n    status\r\n    type\r\n  }\r\n}",
+						"variables": "{\r\n  \"capsuleId\": \"{{capsuleID}}\"\r\n}"
+					}
+				},
+				"url": "{{baseURL}}"
+			},
+			"response": []
+		}
+	]
+}
